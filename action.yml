@@ -1,0 +1,7 @@
+name: Minerva CI Observer
+
+runs:
+  using: composite
+  steps:
+    - run: echo hello
+      shell: bash
