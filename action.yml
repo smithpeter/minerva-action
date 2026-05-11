@@ -69,50 +69,50 @@ runs:
         MINERVA_DECISION_REASON="$decision_reason" \
         MINERVA_DECISION_JSON="$decision_json" \
         python3 - <<'PY'
-import json
-import os
-from pathlib import Path
+        import json
+        import os
+        from pathlib import Path
 
-payload = {
-    "tool": "minerva-action",
-    "mode": "observation-only",
-    "command": os.environ["MINERVA_COMMAND"],
-    "summary_path": os.environ["MINERVA_SUMMARY_PATH"],
-    "artifact_name": os.environ["MINERVA_ARTIFACT_NAME"],
-    "redaction_mode": os.environ["MINERVA_REDACTION_MODE"],
-    "started_at": os.environ["MINERVA_STARTED_AT"],
-    "finished_at": os.environ["MINERVA_FINISHED_AT"],
-    "exit_code": int(os.environ["MINERVA_EXIT_CODE"]),
-    "decision": os.environ["MINERVA_DECISION"],
-    "decision_reason": os.environ["MINERVA_DECISION_REASON"],
-    "auto_repair": False,
-    "model_selected_execution": False,
-}
+        payload = {
+            "tool": "minerva-action",
+            "mode": "observation-only",
+            "command": os.environ["MINERVA_COMMAND"],
+            "summary_path": os.environ["MINERVA_SUMMARY_PATH"],
+            "artifact_name": os.environ["MINERVA_ARTIFACT_NAME"],
+            "redaction_mode": os.environ["MINERVA_REDACTION_MODE"],
+            "started_at": os.environ["MINERVA_STARTED_AT"],
+            "finished_at": os.environ["MINERVA_FINISHED_AT"],
+            "exit_code": int(os.environ["MINERVA_EXIT_CODE"]),
+            "decision": os.environ["MINERVA_DECISION"],
+            "decision_reason": os.environ["MINERVA_DECISION_REASON"],
+            "auto_repair": False,
+            "model_selected_execution": False,
+        }
 
-Path(os.environ["MINERVA_DECISION_JSON"]).write_text(
-    json.dumps(payload, indent=2, sort_keys=True) + "\n"
-)
+        Path(os.environ["MINERVA_DECISION_JSON"]).write_text(
+            json.dumps(payload, indent=2, sort_keys=True) + "\n"
+        )
 
-summary = f"""# Minerva CI Summary
+        summary = f"""# Minerva CI Summary
 
-- Mode: observation-only
-- Command: `{payload["command"]}`
-- Redaction mode: `{payload["redaction_mode"]}`
-- Started at: `{payload["started_at"]}`
-- Finished at: `{payload["finished_at"]}`
-- Exit code: `{payload["exit_code"]}`
-- Decision: `{payload["decision"]}`
-- Decision reason: {payload["decision_reason"]}
-- Auto-repair: disabled
-- Model-selected execution: disabled
+        - Mode: observation-only
+        - Command: `{payload["command"]}`
+        - Redaction mode: `{payload["redaction_mode"]}`
+        - Started at: `{payload["started_at"]}`
+        - Finished at: `{payload["finished_at"]}`
+        - Exit code: `{payload["exit_code"]}`
+        - Decision: `{payload["decision"]}`
+        - Decision reason: {payload["decision_reason"]}
+        - Auto-repair: disabled
+        - Model-selected execution: disabled
 
-## Captured Output
+        ## Captured Output
 
-See `{payload["artifact_name"]}/command.log` in the uploaded evidence artifact.
-"""
+        See `{payload["artifact_name"]}/command.log` in the uploaded evidence artifact.
+        """
 
-Path(payload["summary_path"]).write_text(summary)
-PY
+        Path(payload["summary_path"]).write_text(summary)
+        PY
 
         if [ -n "${GITHUB_STEP_SUMMARY:-}" ]; then
           cat "$MINERVA_SUMMARY_PATH" >> "$GITHUB_STEP_SUMMARY"
